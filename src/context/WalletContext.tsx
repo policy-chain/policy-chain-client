@@ -22,17 +22,79 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }, []);
 
-  // 더이상 필요없는 checkConnection 함수 제거
+  // 연결 상태 localStorage에 저장
+  const saveConnectionState = useCallback((address: string, walletType: string) => {
+    localStorage.setItem('walletConnected', 'true');
+    localStorage.setItem('walletAddress', address);
+    localStorage.setItem('walletType', walletType);
+  }, []);
+
+  // 연결 상태 localStorage에서 제거
+  const clearConnectionState = useCallback(() => {
+    localStorage.removeItem('walletConnected');
+    localStorage.removeItem('walletAddress');
+    localStorage.removeItem('walletType');
+  }, []);
+
+  // 페이지 로드시 이전 연결 상태 복원
+  const restoreConnection = useCallback(async () => {
+    const wasConnected = localStorage.getItem('walletConnected') === 'true';
+    const savedAddress = localStorage.getItem('walletAddress');
+    const walletType = localStorage.getItem('walletType');
+    
+    if (wasConnected && savedAddress && walletType) {
+      try {
+        let targetProvider;
+        
+        if (walletType === 'metamask' && isMetamaskInstalled()) {
+          targetProvider = window.ethereum.providers?.find((provider: any) => provider.isMetaMask) || window.ethereum;
+        } else if (walletType === 'phantom' && isPhantomInstalled()) {
+          targetProvider = window.phantom!.ethereum;
+        }
+        
+        if (targetProvider) {
+          // 현재 연결된 계정 확인
+          const accounts = await targetProvider.request({ method: 'eth_accounts' });
+          
+          if (accounts.length > 0 && accounts[0].toLowerCase() === savedAddress.toLowerCase()) {
+            const provider = new ethers.BrowserProvider(targetProvider);
+            await updateNetworkInfo(provider);
+            
+            setProvider(provider);
+            setAddress(accounts[0]);
+            setIsConnected(true);
+            
+            console.log(`${walletType} 지갑 연결 복원 완료:`, accounts[0]);
+          } else {
+            // 저장된 주소와 다르면 연결 상태 초기화
+            clearConnectionState();
+          }
+        }
+      } catch (error) {
+        console.error('지갑 연결 복원 실패:', error);
+        clearConnectionState();
+      }
+    }
+  }, [updateNetworkInfo, clearConnectionState]);
 
   useEffect(() => {
-    // 자동 연결은 제거하고, 계정 변경 감지만 유지
+    // 페이지 로드시 이전 연결 상태 복원
+    restoreConnection();
+  }, [restoreConnection]);
+
+  useEffect(() => {
+    // 지갑 이벤트 리스너 설정
     if (window.ethereum) {
       const handleAccountsChanged = (accounts: string[]) => {
         if (accounts.length === 0) {
           disconnect();
         } else if (isConnected) {
-          // 이미 연결된 상태에서만 계정 변경 처리
           setAddress(accounts[0]);
+          // 계정 변경시 저장된 주소도 업데이트
+          const walletType = localStorage.getItem('walletType');
+          if (walletType) {
+            saveConnectionState(accounts[0], walletType);
+          }
         }
       };
 
@@ -51,7 +113,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         window.ethereum.removeListener('chainChanged', handleChainChanged);
       };
     }
-  }, [isConnected]);
+  }, [isConnected, saveConnectionState]);
 
   const connectMetamask = async () => {
     if (!isMetamaskInstalled()) {
@@ -77,6 +139,11 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setProvider(provider);
       setAddress(address);
       setIsConnected(true);
+      
+      // 연결 상태를 localStorage에 저장
+      saveConnectionState(address, 'metamask');
+      
+      console.log('메타마스크 연결 성공:', address);
     } catch (error: any) {
       console.error('메타마스크 연결 실패:', error);
       setError(error.message || '메타마스크 연결에 실패했습니다.');
@@ -106,6 +173,11 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setProvider(provider);
       setAddress(address);
       setIsConnected(true);
+      
+      // 연결 상태를 localStorage에 저장
+      saveConnectionState(address, 'phantom');
+      
+      console.log('팬텀 지갑 연결 성공:', address);
     } catch (error: any) {
       console.error('팬텀 연결 실패:', error);
       setError(error.message || '팬텀 지갑 연결에 실패했습니다.');
@@ -120,6 +192,11 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setIsConnected(false);
     setNetwork(null);
     setError(null);
+    
+    // localStorage에서 연결 상태 제거
+    clearConnectionState();
+    
+    console.log('지갑 연결 해제');
   };
 
   const value = {
