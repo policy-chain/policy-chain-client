@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useLanguage } from '../../context/LanguageContext';
 import { Icon } from '../common/Icon';
 
 interface CreateDiscussionModalProps {
