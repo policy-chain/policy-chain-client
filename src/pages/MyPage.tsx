@@ -1,20 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useWallet } from '../context/WalletContext';
 import { Icon } from '../components/common/Icon';
 import { Sidebar } from '../components/layout/Sidebar';
 import { RightSidebar } from '../components/layout/RightSidebar';
+import { Button } from '../components/common/Button';
 
 export const MyPage: React.FC = () => {
   const { t } = useLanguage();
   const { address } = useWallet();
-  const [activeTab, setActiveTab] = useState('votes');
+  const [activeTab, setActiveTab] = useState('stakes');
 
   // 주소 포맷팅 함수
   const formatAddress = (addr: string) => {
     if (!addr) return '';
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
   };
+
+  // 스테이킹 데이터 가져오기
+  const getUserStakes = () => {
+    const stakes = JSON.parse(localStorage.getItem('userStakes') || '[]');
+    return stakes;
+  };
+
+  const handleClaimStake = (stakeId: number) => {
+    const stakes = getUserStakes();
+    const updatedStakes = stakes.map((stake: any) => 
+      stake.id === stakeId 
+        ? { ...stake, status: 'claimed' }
+        : stake
+    );
+    localStorage.setItem('userStakes', JSON.stringify(updatedStakes));
+    alert('스테이킹 토큰이 성공적으로 회수되었습니다!');
+    // 컴포넌트 리렌더링을 위해 강제로 상태 업데이트
+    window.location.reload();
+  };
+
+  // 컴포넌트가 마운트될 때 샘플 데이터 추가
+  useEffect(() => {
+    const existingStakes = getUserStakes();
+    if (existingStakes.length === 0) {
+      // 샘플 스테이킹 데이터 추가
+      const sampleStakes = [
+        {
+          id: 1,
+          policyId: 1,
+          policyTitle: '2025년 탄소세 도입법',
+          voteType: 'support',
+          stakeAmount: 100,
+          timestamp: '2025-08-25T10:00:00Z',
+          status: 'active',
+          earnedReward: 100
+        },
+        {
+          id: 2,
+          policyId: 2,
+          policyTitle: '디지털 의료 현대화 계획',
+          voteType: 'support',
+          stakeAmount: 50,
+          timestamp: '2025-08-24T15:30:00Z',
+          status: 'claimable',
+          earnedReward: 150
+        },
+        {
+          id: 3,
+          policyId: 3,
+          policyTitle: '소상공인 지원 패키지',
+          voteType: 'oppose',
+          stakeAmount: 75,
+          timestamp: '2025-08-20T09:15:00Z',
+          status: 'claimable',
+          earnedReward: 75
+        }
+      ];
+      localStorage.setItem('userStakes', JSON.stringify(sampleStakes));
+    }
+  }, []);
 
   // 모의 데이터
   const myVotes = [
@@ -88,6 +149,233 @@ export const MyPage: React.FC = () => {
 
   const renderTabContent = () => {
     switch (activeTab) {
+      case 'stakes':
+        const userStakes = getUserStakes();
+        const activeStakes = userStakes.filter((stake: any) => stake.status === 'active');
+        const claimableStakes = userStakes.filter((stake: any) => stake.status === 'claimable');
+        const claimedStakes = userStakes.filter((stake: any) => stake.status === 'claimed');
+
+        return (
+          <div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1.5rem'
+            }}>
+              <h3 style={{ fontSize: '20px', fontWeight: '600' }}>
+                스테이킹 관리
+              </h3>
+              <div style={{
+                display: 'flex',
+                gap: '1rem',
+                fontSize: '14px'
+              }}>
+                <div style={{
+                  padding: '0.5rem 1rem',
+                  background: 'rgba(32, 178, 170, 0.1)',
+                  borderRadius: '20px',
+                  color: 'var(--teal)',
+                  fontWeight: '600'
+                }}>
+                  활성: {activeStakes.length}
+                </div>
+                <div style={{
+                  padding: '0.5rem 1rem',
+                  background: 'rgba(50, 205, 50, 0.1)',
+                  borderRadius: '20px',
+                  color: 'var(--green)',
+                  fontWeight: '600'
+                }}>
+                  회수가능: {claimableStakes.length}
+                </div>
+              </div>
+            </div>
+
+            {/* Active Stakes */}
+            {activeStakes.length > 0 && (
+              <div style={{ marginBottom: '2rem' }}>
+                <h4 style={{ 
+                  fontSize: '16px', 
+                  fontWeight: '600', 
+                  marginBottom: '1rem',
+                  color: 'var(--teal)'
+                }}>
+                  활성 스테이킹 ({activeStakes.length})
+                </h4>
+                {activeStakes.map((stake: any) => (
+                  <div
+                    key={stake.id}
+                    style={{
+                      background: 'var(--bg-light)',
+                      border: '1px solid var(--border-light)',
+                      borderRadius: '16px',
+                      padding: '1.5rem',
+                      marginBottom: '1rem',
+                    }}
+                  >
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'start'
+                    }}>
+                      <div style={{ flex: 1 }}>
+                        <h4 style={{
+                          fontSize: '18px',
+                          fontWeight: '600',
+                          marginBottom: '0.5rem',
+                          color: 'var(--text-dark)'
+                        }}>
+                          {stake.policyTitle}
+                        </h4>
+                        <div style={{
+                          display: 'flex',
+                          gap: '1rem',
+                          fontSize: '14px',
+                          color: 'var(--text-light)',
+                          marginBottom: '0.5rem'
+                        }}>
+                          <span>{new Date(stake.timestamp).toLocaleDateString()}</span>
+                          <span>•</span>
+                          <span style={{
+                            color: stake.voteType === 'support' ? 'var(--green)' : 
+                                  stake.voteType === 'oppose' ? '#dc3545' : 'var(--text-light)',
+                            fontWeight: '600'
+                          }}>
+                            {stake.voteType === 'support' ? '찬성' : 
+                             stake.voteType === 'oppose' ? '반대' : '기권'}
+                          </span>
+                        </div>
+                        <div style={{
+                          display: 'flex',
+                          gap: '1rem',
+                          fontSize: '14px'
+                        }}>
+                          <span style={{ color: 'var(--text-light)' }}>스테이킹:</span>
+                          <span style={{ color: 'var(--teal)', fontWeight: '600' }}>
+                            {stake.stakeAmount} 토큰
+                          </span>
+                        </div>
+                      </div>
+                      <div style={{
+                        padding: '4px 12px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        background: 'rgba(32, 178, 170, 0.1)',
+                        color: 'var(--teal)'
+                      }}>
+                        진행중
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Claimable Stakes */}
+            {claimableStakes.length > 0 && (
+              <div style={{ marginBottom: '2rem' }}>
+                <h4 style={{ 
+                  fontSize: '16px', 
+                  fontWeight: '600', 
+                  marginBottom: '1rem',
+                  color: 'var(--green)'
+                }}>
+                  회수 가능한 스테이킹 ({claimableStakes.length})
+                </h4>
+                {claimableStakes.map((stake: any) => (
+                  <div
+                    key={stake.id}
+                    style={{
+                      background: 'var(--bg-light)',
+                      border: '2px solid var(--green)',
+                      borderRadius: '16px',
+                      padding: '1.5rem',
+                      marginBottom: '1rem',
+                      position: 'relative'
+                    }}
+                  >
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: '4px',
+                      background: 'var(--gradient-green)',
+                      borderRadius: '16px 16px 0 0'
+                    }} />
+                    
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'start',
+                      marginBottom: '1rem'
+                    }}>
+                      <div style={{ flex: 1 }}>
+                        <h4 style={{
+                          fontSize: '18px',
+                          fontWeight: '600',
+                          marginBottom: '0.5rem',
+                          color: 'var(--text-dark)'
+                        }}>
+                          {stake.policyTitle}
+                        </h4>
+                        <div style={{
+                          display: 'flex',
+                          gap: '2rem',
+                          fontSize: '14px',
+                          marginBottom: '0.5rem'
+                        }}>
+                          <div>
+                            <span style={{ color: 'var(--text-light)' }}>스테이킹:</span>
+                            <span style={{ color: 'var(--teal)', fontWeight: '600', marginLeft: '0.5rem' }}>
+                              {stake.stakeAmount} 토큰
+                            </span>
+                          </div>
+                          <div>
+                            <span style={{ color: 'var(--text-light)' }}>리워드:</span>
+                            <span style={{ color: 'var(--green)', fontWeight: '600', marginLeft: '0.5rem' }}>
+                              +{stake.earnedReward}P
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        onClick={() => handleClaimStake(stake.id)}
+                        variant="primary"
+                        style={{
+                          background: 'var(--gradient-green)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          padding: '0.5rem 1rem'
+                        }}
+                      >
+                        <Icon name="download" size={14} />
+                        회수하기
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Empty State */}
+            {userStakes.length === 0 && (
+              <div style={{
+                textAlign: 'center',
+                padding: '3rem',
+                color: 'var(--text-light)'
+              }}>
+                <Icon name="lock" size={48} color="var(--text-light)" style={{ marginBottom: '1rem' }} />
+                <p>아직 스테이킹한 토큰이 없습니다.</p>
+                <p>정책에 투표하여 토큰을 스테이킹해보세요!</p>
+              </div>
+            )}
+          </div>
+        );
+
       case 'votes':
         return (
           <div>
@@ -473,6 +761,7 @@ export const MyPage: React.FC = () => {
           marginBottom: '2rem'
         }}>
           {[
+            { key: 'stakes', label: '스테이킹 관리' },
             { key: 'proposals', label: '제안한 정책' },
             { key: 'votes', label: '투표 기록' },
             { key: 'discussions', label: '토론 참여' }
@@ -488,7 +777,6 @@ export const MyPage: React.FC = () => {
                 cursor: 'pointer',
                 color: activeTab === tab.key ? 'var(--teal)' : 'var(--text-light)',
                 borderBottom: activeTab === tab.key ? '2px solid var(--teal)' : '2px solid transparent',
-                // transition: 'all 0.3s ease'
               }}
             >
               {tab.label}

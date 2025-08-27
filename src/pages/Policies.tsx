@@ -38,7 +38,7 @@ export const Policies: React.FC = () => {
     setIsVoteModalOpen(true);
   };
 
-  const handleVote = (policyId: number, voteType: 'support' | 'oppose' | 'abstain') => {
+  const handleVote = (policyId: number, voteType: 'support' | 'oppose' | 'abstain', stakeAmount: number) => {
     setPolicies(prevPolicies =>
       prevPolicies.map(policy =>
         policy.id === policyId
@@ -53,9 +53,24 @@ export const Policies: React.FC = () => {
       )
     );
     
+    // 스테이킹 정보를 localStorage에 저장 (실제로는 블록체인에 저장)
+    const stakeInfo = {
+      id: Date.now(),
+      policyId,
+      policyTitle: selectedPolicy?.title.ko || '',
+      voteType,
+      stakeAmount,
+      timestamp: new Date().toISOString(),
+      status: 'active',
+      earnedReward: selectedPolicy?.reward || 0
+    };
+    
+    const existingStakes = JSON.parse(localStorage.getItem('userStakes') || '[]');
+    localStorage.setItem('userStakes', JSON.stringify([...existingStakes, stakeInfo]));
+    
     alert(t({ 
-      en: `Vote submitted successfully! You earned ${selectedPolicy?.reward} points.`,
-      ko: `투표가 성공적으로 제출되었습니다! ${selectedPolicy?.reward}포인트를 획득했습니다.`
+      en: `Vote submitted successfully! You staked ${stakeAmount} tokens and earned ${selectedPolicy?.reward} points.`,
+      ko: `투표가 성공적으로 제출되었습니다! ${stakeAmount} 토큰을 스테이킹하고 ${selectedPolicy?.reward}포인트를 획득했습니다.`
     }));
   };
 

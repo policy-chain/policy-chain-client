@@ -57,6 +57,23 @@ export interface Achievement {
   unlocked: boolean;
 }
 
+// 스테이킹 관련 타입 추가
+export interface StakeInfo {
+  id: number;
+  policyId: number;
+  policyTitle: string;
+  voteType: VoteType;
+  stakeAmount: number;
+  timestamp: string;
+  status: 'active' | 'claimable' | 'claimed';
+  earnedReward: number;
+}
+
+export interface VoteWithStake {
+  voteType: VoteType;
+  stakeAmount: number;
+}
+
 export type Language = 'en' | 'ko';
 export type Section = 'dashboard' | 'policies' | 'community' | 'rewards';
 export type VoteType = 'support' | 'oppose' | 'abstain';
