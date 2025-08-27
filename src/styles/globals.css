@@ -28,7 +28,8 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg-light);
   color: var(--text-dark);
-  line-height: 1.6;
+  line-height: 1.5;
+  font-size: 14px;
 }
 
 .korean {

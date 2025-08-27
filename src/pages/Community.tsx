@@ -82,7 +82,7 @@ export const Community: React.FC = () => {
               key={tab.key}
               onClick={() => setFilter(tab.key)}
               style={{
-                padding: '12px 20px',
+                padding: '6px 20px',
                 border: '2px solid var(--border-light)',
                 borderRadius: '25px',
                 backgroundColor: filter === tab.key ? 'var(--teal)' : 'var(--bg-white)',

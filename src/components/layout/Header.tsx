@@ -44,16 +44,19 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
         height: '80px'
       }}>
         {/* Logo */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          fontSize: '24px',
-          fontWeight: '700',
-          color: 'var(--text-dark)',
-          textDecoration: 'none',
-          cursor: 'pointer'
-        }}>
+        <div 
+          onClick={() => onSectionChange('dashboard')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            fontSize: '20px',
+            fontWeight: '700',
+            color: 'var(--text-dark)',
+            textDecoration: 'none',
+            cursor: 'pointer'
+          }}
+        >
           <img 
             src="/images/policy-logo.png" 
             alt="PolicyChain Logo"

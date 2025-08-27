@@ -86,7 +86,7 @@ export const Dashboard: React.FC = () => {
           gap: '2rem'
         }}>
           <h1 style={{
-            fontSize: '32px',
+            fontSize: '24px',
             fontWeight: '700',
             background: 'var(--gradient-teal)',
             WebkitBackgroundClip: 'text',
@@ -105,7 +105,7 @@ export const Dashboard: React.FC = () => {
                 key={tab.key}
                 onClick={() => setFilter(tab.key)}
                 style={{
-                  padding: '12px 20px',
+                  padding: '6px 20px',
                   border: '2px solid var(--border-light)',
                   borderRadius: '25px',
                   backgroundColor: filter === tab.key ? 'var(--teal)' : 'var(--bg-white)',
