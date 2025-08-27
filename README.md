@@ -2,7 +2,7 @@
 A decentralized platform where citizens can stake tokens to participate in policy decisions and earn rewards based on voting outcomes. Built for democratic participation through blockchain technology.
 
 ## Live Demo
-**Live Site**: [https://policy-chain-client.vercel.app](https://policy-chain-client.vercel.app)
+**Live Site**: [https://www.policychain.kr](https://www.policychain.kr)
 
 ## Overview
 PolicyChain enables democratic participation through a token-staking mechanism where users:
