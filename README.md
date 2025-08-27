@@ -4,7 +4,7 @@ PolicyChain: Stake tokens to participate in policy decisions, earn rewards when 
 
 ## Live Demo
 
-🌐 **Live Site**: [https://policy-chain-client.vercel.app](https://policy-chain-client.vercel.app)
+Live Site: [https://policy-chain-client.vercel.app](https://policy-chain-client.vercel.app)
 
 ## 주요 기능
 

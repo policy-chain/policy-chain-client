@@ -772,7 +772,7 @@ export const MyPage: React.FC = () => {
           marginBottom: '2rem'
         }}>
           <h1 style={{
-            fontSize: '32px',
+            fontSize: '24px',
             fontWeight: '700',
             background: 'var(--gradient-teal)',
             WebkitBackgroundClip: 'text',
@@ -805,7 +805,7 @@ export const MyPage: React.FC = () => {
             overflow: 'hidden'
           }}>
             <img 
-              src="/images/user-icon.png"
+              src={process.env.PUBLIC_URL + '/images/user-icon.png'}
               alt="User Profile"
               style={{
                 width: '50px',

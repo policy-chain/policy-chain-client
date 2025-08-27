@@ -146,7 +146,7 @@ export const Policies: React.FC = () => {
           marginBottom: '2rem'
         }}>
           <h1 style={{
-            fontSize: '32px',
+            fontSize: '24px',
             fontWeight: '700',
             background: 'var(--gradient-teal)',
             WebkitBackgroundClip: 'text',

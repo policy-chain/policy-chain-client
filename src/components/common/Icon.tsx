@@ -187,7 +187,7 @@ export const Icon: React.FC<IconProps> = ({ name, size = 20, color = 'currentCol
       case 'heart':
         return (
           <img 
-            src="/images/medical-icon.png" 
+            src={process.env.PUBLIC_URL + '/images/medical-icon.png'} 
             alt="Medical Icon"
             width={size}
             height={size}
