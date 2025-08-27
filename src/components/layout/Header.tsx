@@ -54,19 +54,15 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
           textDecoration: 'none',
           cursor: 'pointer'
         }}>
-          <div style={{
-            width: '32px',
-            height: '32px',
-            background: 'var(--gradient-teal)',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontSize: '16px'
-          }}>
-            P
-          </div>
+          <img 
+            src="/images/policy-logo.png" 
+            alt="PolicyChain Logo"
+            style={{
+              height: '40px',
+              width: 'auto',
+              borderRadius: '5px'
+            }}
+          />
           PolicyChain
         </div>
 

@@ -6,24 +6,28 @@ export const formatAddress = (address: string): string => {
 };
 
 export const isMetamaskInstalled = (): boolean => {
-  return typeof window !== 'undefined' && typeof window.ethereum !== 'undefined';
+  return typeof window !== 'undefined' && 
+         typeof window.ethereum !== 'undefined' && 
+         window.ethereum.isMetaMask;
 };
 
 export const isPhantomInstalled = (): boolean => {
-  return typeof window !== 'undefined' && window.phantom?.ethereum;
+  return typeof window !== 'undefined' && 
+         typeof window.phantom?.ethereum !== 'undefined';
 };
 
-export const switchToKaiaTestnet = async (): Promise<void> => {
-  if (!window.ethereum) throw new Error('지갑이 설치되어 있지 않습니다');
+export const switchToKaiaTestnet = async (provider?: any): Promise<void> => {
+  const targetProvider = provider || window.ethereum;
+  if (!targetProvider) throw new Error('지갑이 설치되어 있지 않습니다');
   
   try {
-    await window.ethereum.request({
+    await targetProvider.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: KAIA_TESTNET.chainId }],
     });
   } catch (switchError: any) {
     if (switchError.code === 4902) {
-      await window.ethereum.request({
+      await targetProvider.request({
         method: 'wallet_addEthereumChain',
         params: [KAIA_TESTNET],
       });

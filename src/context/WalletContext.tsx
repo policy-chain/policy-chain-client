@@ -63,12 +63,15 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setError(null);
 
     try {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      // MetaMask 전용 provider를 직접 사용
+      const metamaskProvider = window.ethereum.providers?.find((provider: any) => provider.isMetaMask) || window.ethereum;
+      
+      await metamaskProvider.request({ method: 'eth_requestAccounts' });
+      const provider = new ethers.BrowserProvider(metamaskProvider);
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
       
-      await switchToKaiaTestnet();
+      await switchToKaiaTestnet(metamaskProvider);
       await updateNetworkInfo(provider);
       
       setProvider(provider);
@@ -97,7 +100,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
       
-      await switchToKaiaTestnet();
+      await switchToKaiaTestnet(window.phantom!.ethereum);
       await updateNetworkInfo(provider);
       
       setProvider(provider);
