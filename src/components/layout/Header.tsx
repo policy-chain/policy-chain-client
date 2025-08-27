@@ -123,10 +123,17 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
           {/* Wallet Connection */}
           {isConnected ? (
             <div style={{ position: 'relative' }}>
-              <Button
+              <button
                 onClick={() => setShowWalletDropdown(!showWalletDropdown)}
-                variant="primary"
                 style={{
+                  background: 'var(--primary-blue)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '12px 24px',
+                  borderRadius: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px'
@@ -135,7 +142,7 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
                 <Icon name="wallet" size={16} />
                 {t({ en: `Connected: ${formatAddress(address!)}`, ko: `연결됨: ${formatAddress(address!)}` })}
                 <Icon name="chevronDown" size={16} />
-              </Button>
+              </button>
               
               {showWalletDropdown && (
                 <div style={{
@@ -197,19 +204,38 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
             </div>
           ) : (
             <div style={{ position: 'relative' }}>
-              <Button
+              <button
                 onClick={() => setShowWalletDropdown(!showWalletDropdown)}
-                variant="primary"
-                loading={isConnecting}
+                disabled={isConnecting}
                 style={{
+                  background: 'var(--primary-blue)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '12px 24px',
+                  borderRadius: '12px',
+                  fontWeight: '600',
+                  cursor: isConnecting ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.3s ease',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px'
+                  gap: '8px',
+                  opacity: isConnecting ? 0.7 : 1
                 }}
               >
-                <Icon name="wallet" size={16} />
+                {isConnecting ? (
+                  <div style={{ 
+                    width: '16px', 
+                    height: '16px', 
+                    border: '2px solid currentColor', 
+                    borderTop: '2px solid transparent',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite' 
+                  }} />
+                ) : (
+                  <Icon name="wallet" size={16} />
+                )}
                 {t({ en: 'Connect Wallet', ko: '지갑 연결' })}
-              </Button>
+              </button>
               
               {showWalletDropdown && (
                 <div style={{

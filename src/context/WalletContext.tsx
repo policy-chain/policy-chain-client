@@ -22,44 +22,25 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }, []);
 
-  const checkConnection = useCallback(async () => {
-    if (!isMetamaskInstalled()) return;
-    
-    try {
-      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-      if (accounts.length > 0) {
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        setProvider(provider);
-        setAddress(accounts[0]);
-        setIsConnected(true);
-        await updateNetworkInfo(provider);
-        
-        // 네트워크가 카이아 테스트넷이 아니면 전환 시도
-        const network = await provider.getNetwork();
-        if (network.chainId !== BigInt(1001)) {
-          await switchToKaiaTestnet();
-        }
-      }
-    } catch (error) {
-      console.error('지갑 연결 확인 실패:', error);
-    }
-  }, [updateNetworkInfo]);
+  // 더이상 필요없는 checkConnection 함수 제거
 
   useEffect(() => {
-    checkConnection();
-    
-    // 계정 변경 감지
+    // 자동 연결은 제거하고, 계정 변경 감지만 유지
     if (window.ethereum) {
       const handleAccountsChanged = (accounts: string[]) => {
         if (accounts.length === 0) {
           disconnect();
-        } else {
+        } else if (isConnected) {
+          // 이미 연결된 상태에서만 계정 변경 처리
           setAddress(accounts[0]);
         }
       };
 
       const handleChainChanged = () => {
-        window.location.reload();
+        // 연결된 상태에서만 페이지 새로고침
+        if (isConnected) {
+          window.location.reload();
+        }
       };
 
       window.ethereum.on('accountsChanged', handleAccountsChanged);
@@ -70,7 +51,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         window.ethereum.removeListener('chainChanged', handleChainChanged);
       };
     }
-  }, [checkConnection]);
+  }, [isConnected]);
 
   const connectMetamask = async () => {
     if (!isMetamaskInstalled()) {

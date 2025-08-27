@@ -156,7 +156,7 @@ export const Policies: React.FC = () => {
             marginBottom: '2rem'
           }}
         >
-          <Icon name="policy" size={48} color="var(--teal)" style={{ marginBottom: '1rem' }} />
+          <Icon name="plus" size={48} color="var(--teal)" style={{ marginBottom: '1rem' }} />
           <h3 style={{ color: 'var(--teal)', marginBottom: '0.5rem' }}>
             {t({ en: 'Propose New Policy', ko: '새 정책 제안' })}
           </h3>
@@ -272,7 +272,7 @@ export const Policies: React.FC = () => {
                 variant="primary"
                 style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
               >
-                <Icon name="check" size={16} />
+                <Icon name="document" size={16} />
                 {t({ en: 'Submit Proposal', ko: '제안 제출' })}
               </Button>
             </div>

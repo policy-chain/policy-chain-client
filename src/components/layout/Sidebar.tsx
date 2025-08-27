@@ -19,17 +19,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeCategory, onCategoryChan
     { 
       key: 'economy', 
       label: { en: 'Economy', ko: '경제' },
-      icon: 'policy'
+      icon: 'money'
     },
     { 
       key: 'environment', 
       label: { en: 'Environment', ko: '환경' },
-      icon: 'award'
+      icon: 'recycle'
     },
     { 
       key: 'healthcare', 
       label: { en: 'Healthcare', ko: '의료' },
-      icon: 'check'
+      icon: 'heart'
     }
   ];
 
