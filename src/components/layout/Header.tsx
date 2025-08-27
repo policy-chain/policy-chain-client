@@ -484,14 +484,15 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
         <div style={{
           position: 'fixed',
           top: '100px',
-          right: '20px',
+          right: '50px',
           background: '#dc3545',
           color: 'white',
           padding: '12px 20px',
           borderRadius: '8px',
           boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
           zIndex: 10000,
-          maxWidth: '400px',
+          maxWidth: '350px',
+          minWidth: '280px',
           animation: 'slideIn 0.3s ease-out'
         }}>
           <div style={{
