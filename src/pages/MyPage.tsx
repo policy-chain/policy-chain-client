@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useLanguage } from '../context/LanguageContext';
 import { useWallet } from '../context/WalletContext';
 import { Icon } from '../components/common/Icon';
 import { Sidebar } from '../components/layout/Sidebar';
@@ -7,7 +6,6 @@ import { RightSidebar } from '../components/layout/RightSidebar';
 import { Button } from '../components/common/Button';
 
 export const MyPage: React.FC = () => {
-  const { t } = useLanguage();
   const { address } = useWallet();
   const [activeTab, setActiveTab] = useState('votes');
 
@@ -538,6 +536,8 @@ export const MyPage: React.FC = () => {
             )}
           </div>
         );
+
+      case 'proposals':
         return (
           <div>
             <h3 style={{ marginBottom: '1.5rem', fontSize: '20px', fontWeight: '600' }}>

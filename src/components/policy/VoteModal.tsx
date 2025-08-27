@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Policy, VoteType, VoteWithStake } from '../../types';
+import { Policy, VoteType } from '../../types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Button } from '../common/Button';
 import { Icon } from '../common/Icon';

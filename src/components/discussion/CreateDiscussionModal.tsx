@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { Icon } from '../common/Icon';
-import { Button } from '../common/Button';
 
 interface CreateDiscussionModalProps {
   isOpen: boolean;
@@ -18,7 +17,6 @@ export const CreateDiscussionModal: React.FC<CreateDiscussionModalProps> = ({
   onClose,
   onSubmit
 }) => {
-  const { t } = useLanguage();
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('general');
   const [content, setContent] = useState('');

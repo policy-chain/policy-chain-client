@@ -87,7 +87,13 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     if (window.ethereum) {
       const handleAccountsChanged = (accounts: string[]) => {
         if (accounts.length === 0) {
-          disconnect();
+          // disconnect 함수를 직접 호출하지 않고 상태를 직접 초기화
+          setAddress(null);
+          setProvider(null);
+          setIsConnected(false);
+          setNetwork(null);
+          setError(null);
+          clearConnectionState();
         } else if (isConnected) {
           setAddress(accounts[0]);
           // 계정 변경시 저장된 주소도 업데이트
@@ -113,7 +119,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         window.ethereum.removeListener('chainChanged', handleChainChanged);
       };
     }
-  }, [isConnected, saveConnectionState]);
+  }, [isConnected, saveConnectionState, clearConnectionState]);
 
   const connectMetamask = async () => {
     if (!isMetamaskInstalled()) {
