@@ -89,7 +89,7 @@ export const Policies: React.FC = () => {
     
     alert(t({ 
       en: 'Policy proposal submitted! It will be reviewed within 3 business days.',
-      ko: '정책 제안이 제출되었습니다! 3영업일 내에 검토됩니다.'
+      ko: '정책 제안이 제출되었습니다!'
     }));
   };
 

@@ -6,14 +6,16 @@ import { Icon } from '../components/common/Icon';
 import { Sidebar } from '../components/layout/Sidebar';
 import { RightSidebar } from '../components/layout/RightSidebar';
 import { DiscussionModal } from '../components/discussion/DiscussionModal';
+import { CreateDiscussionModal } from '../components/discussion/CreateDiscussionModal';
 
 export const Community: React.FC = () => {
   const { t } = useLanguage();
-  const [discussions] = useState<Discussion[]>(mockDiscussions);
+  const [discussions, setDiscussions] = useState<Discussion[]>(mockDiscussions);
   const [category, setCategory] = useState('all');
   const [filter, setFilter] = useState('all');
   const [selectedDiscussion, setSelectedDiscussion] = useState<Discussion | undefined>(undefined);
   const [isDiscussionModalOpen, setIsDiscussionModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const filteredDiscussions = discussions.filter(discussion => {
     const matchesCategory = category === 'all' || discussion.category === category;
@@ -24,6 +26,26 @@ export const Community: React.FC = () => {
     
     return matchesCategory && matchesFilter;
   });
+
+  const handleCreateDiscussion = (discussionData: {
+    title: string;
+    category: string;
+    content: string;
+  }) => {
+    const newDiscussion: Discussion = {
+      id: discussions.length + 1,
+      title: { en: discussionData.title, ko: discussionData.title },
+      category: discussionData.category,
+      author: '나',
+      replies: 0,
+      views: 1,
+      lastActivity: '방금 전',
+      isHot: false
+    };
+
+    setDiscussions([newDiscussion, ...discussions]);
+    alert('새 토론이 성공적으로 시작되었습니다!');
+  };
 
   const filterTabs = [
     { key: 'all', label: { en: 'All Topics', ko: '전체 주제' } },
@@ -196,6 +218,7 @@ export const Community: React.FC = () => {
           textAlign: 'center'
         }}>
           <button
+            onClick={() => setIsCreateModalOpen(true)}
             style={{
               padding: '12px 24px',
               background: 'var(--gradient-teal)',
@@ -211,7 +234,7 @@ export const Community: React.FC = () => {
             }}
           >
             <Icon name="discuss" size={16} />
-            {t({ en: 'Start New Discussion', ko: '새 토론 시작' })}
+            새 토론 시작
           </button>
         </div>
       </div>
@@ -227,6 +250,13 @@ export const Community: React.FC = () => {
           setIsDiscussionModalOpen(false);
           setSelectedDiscussion(undefined);
         }}
+      />
+
+      {/* Create Discussion Modal */}
+      <CreateDiscussionModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreateDiscussion}
       />
     </div>
   );
