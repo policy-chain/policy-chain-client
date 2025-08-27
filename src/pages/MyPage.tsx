@@ -9,7 +9,7 @@ import { Button } from '../components/common/Button';
 export const MyPage: React.FC = () => {
   const { t } = useLanguage();
   const { address } = useWallet();
-  const [activeTab, setActiveTab] = useState('stakes');
+  const [activeTab, setActiveTab] = useState('votes');
 
   // 주소 포맷팅 함수
   const formatAddress = (addr: string) => {
@@ -149,11 +149,10 @@ export const MyPage: React.FC = () => {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'stakes':
+      case 'votes':
         const userStakes = getUserStakes();
         const activeStakes = userStakes.filter((stake: any) => stake.status === 'active');
         const claimableStakes = userStakes.filter((stake: any) => stake.status === 'claimable');
-        const claimedStakes = userStakes.filter((stake: any) => stake.status === 'claimed');
 
         return (
           <div>
@@ -164,7 +163,7 @@ export const MyPage: React.FC = () => {
               marginBottom: '1.5rem'
             }}>
               <h3 style={{ fontSize: '20px', fontWeight: '600' }}>
-                스테이킹 관리
+                투표 관리 ({myVotes.length + userStakes.length})
               </h3>
               <div style={{
                 display: 'flex',
@@ -178,7 +177,7 @@ export const MyPage: React.FC = () => {
                   color: 'var(--teal)',
                   fontWeight: '600'
                 }}>
-                  활성: {activeStakes.length}
+                  진행중: {activeStakes.length}
                 </div>
                 <div style={{
                   padding: '0.5rem 1rem',
@@ -192,103 +191,26 @@ export const MyPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Active Stakes */}
-            {activeStakes.length > 0 && (
-              <div style={{ marginBottom: '2rem' }}>
-                <h4 style={{ 
-                  fontSize: '16px', 
-                  fontWeight: '600', 
-                  marginBottom: '1rem',
-                  color: 'var(--teal)'
-                }}>
-                  활성 스테이킹 ({activeStakes.length})
-                </h4>
-                {activeStakes.map((stake: any) => (
-                  <div
-                    key={stake.id}
-                    style={{
-                      background: 'var(--bg-light)',
-                      border: '1px solid var(--border-light)',
-                      borderRadius: '16px',
-                      padding: '1.5rem',
-                      marginBottom: '1rem',
-                    }}
-                  >
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'start'
-                    }}>
-                      <div style={{ flex: 1 }}>
-                        <h4 style={{
-                          fontSize: '18px',
-                          fontWeight: '600',
-                          marginBottom: '0.5rem',
-                          color: 'var(--text-dark)'
-                        }}>
-                          {stake.policyTitle}
-                        </h4>
-                        <div style={{
-                          display: 'flex',
-                          gap: '1rem',
-                          fontSize: '14px',
-                          color: 'var(--text-light)',
-                          marginBottom: '0.5rem'
-                        }}>
-                          <span>{new Date(stake.timestamp).toLocaleDateString()}</span>
-                          <span>•</span>
-                          <span style={{
-                            color: stake.voteType === 'support' ? 'var(--green)' : 
-                                  stake.voteType === 'oppose' ? '#dc3545' : 'var(--text-light)',
-                            fontWeight: '600'
-                          }}>
-                            {stake.voteType === 'support' ? '찬성' : 
-                             stake.voteType === 'oppose' ? '반대' : '기권'}
-                          </span>
-                        </div>
-                        <div style={{
-                          display: 'flex',
-                          gap: '1rem',
-                          fontSize: '14px'
-                        }}>
-                          <span style={{ color: 'var(--text-light)' }}>스테이킹:</span>
-                          <span style={{ color: 'var(--teal)', fontWeight: '600' }}>
-                            {stake.stakeAmount} 토큰
-                          </span>
-                        </div>
-                      </div>
-                      <div style={{
-                        padding: '4px 12px',
-                        borderRadius: '20px',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        background: 'rgba(32, 178, 170, 0.1)',
-                        color: 'var(--teal)'
-                      }}>
-                        진행중
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Claimable Stakes */}
+            {/* Claimable Stakes - 가장 위에 표시 */}
             {claimableStakes.length > 0 && (
               <div style={{ marginBottom: '2rem' }}>
                 <h4 style={{ 
                   fontSize: '16px', 
                   fontWeight: '600', 
                   marginBottom: '1rem',
-                  color: 'var(--green)'
+                  color: 'var(--green)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
                 }}>
-                  회수 가능한 스테이킹 ({claimableStakes.length})
+                  <Icon name="download" size={16} />
+                  토큰 회수 가능 ({claimableStakes.length})
                 </h4>
                 {claimableStakes.map((stake: any) => (
                   <div
                     key={stake.id}
                     style={{
-                      background: 'var(--bg-light)',
+                      background: 'linear-gradient(135deg, rgba(50, 205, 50, 0.1) 0%, rgba(50, 205, 50, 0.05) 100%)',
                       border: '2px solid var(--green)',
                       borderRadius: '16px',
                       padding: '1.5rem',
@@ -313,6 +235,35 @@ export const MyPage: React.FC = () => {
                       marginBottom: '1rem'
                     }}>
                       <div style={{ flex: 1 }}>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          marginBottom: '0.5rem'
+                        }}>
+                          <div style={{
+                            padding: '2px 8px',
+                            background: 'var(--green)',
+                            color: 'white',
+                            borderRadius: '12px',
+                            fontSize: '10px',
+                            fontWeight: '600'
+                          }}>
+                            투표 완료
+                          </div>
+                          <div style={{
+                            padding: '2px 8px',
+                            background: stake.voteType === 'support' ? 'var(--green)' : 
+                                      stake.voteType === 'oppose' ? '#dc3545' : 'var(--text-light)',
+                            color: 'white',
+                            borderRadius: '12px',
+                            fontSize: '10px',
+                            fontWeight: '600'
+                          }}>
+                            {stake.voteType === 'support' ? '찬성' : 
+                             stake.voteType === 'oppose' ? '반대' : '기권'}
+                          </div>
+                        </div>
                         <h4 style={{
                           fontSize: '18px',
                           fontWeight: '600',
@@ -328,17 +279,23 @@ export const MyPage: React.FC = () => {
                           marginBottom: '0.5rem'
                         }}>
                           <div>
-                            <span style={{ color: 'var(--text-light)' }}>스테이킹:</span>
+                            <span style={{ color: 'var(--text-light)' }}>투표한 토큰:</span>
                             <span style={{ color: 'var(--teal)', fontWeight: '600', marginLeft: '0.5rem' }}>
                               {stake.stakeAmount} 토큰
                             </span>
                           </div>
                           <div>
-                            <span style={{ color: 'var(--text-light)' }}>리워드:</span>
+                            <span style={{ color: 'var(--text-light)' }}>보너스 리워드:</span>
                             <span style={{ color: 'var(--green)', fontWeight: '600', marginLeft: '0.5rem' }}>
                               +{stake.earnedReward}P
                             </span>
                           </div>
+                        </div>
+                        <div style={{
+                          fontSize: '12px',
+                          color: 'var(--text-light)'
+                        }}>
+                          투표일: {new Date(stake.timestamp).toLocaleDateString()}
                         </div>
                       </div>
                       <Button
@@ -349,11 +306,11 @@ export const MyPage: React.FC = () => {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '0.5rem',
-                          padding: '0.5rem 1rem'
+                          padding: '0.75rem 1.5rem'
                         }}
                       >
-                        <Icon name="download" size={14} />
-                        회수하기
+                        <Icon name="download" size={16} />
+                        토큰 회수하기
                       </Button>
                     </div>
                   </div>
@@ -361,104 +318,226 @@ export const MyPage: React.FC = () => {
               </div>
             )}
 
+            {/* Active Stakes */}
+            {activeStakes.length > 0 && (
+              <div style={{ marginBottom: '2rem' }}>
+                <h4 style={{ 
+                  fontSize: '16px', 
+                  fontWeight: '600', 
+                  marginBottom: '1rem',
+                  color: 'var(--teal)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <Icon name="lock" size={16} />
+                  진행중인 투표 ({activeStakes.length})
+                </h4>
+                {activeStakes.map((stake: any) => (
+                  <div
+                    key={stake.id}
+                    style={{
+                      background: 'var(--bg-light)',
+                      border: '1px solid var(--border-light)',
+                      borderRadius: '16px',
+                      padding: '1.5rem',
+                      marginBottom: '1rem',
+                    }}
+                  >
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'start'
+                    }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          marginBottom: '0.5rem'
+                        }}>
+                          <div style={{
+                            padding: '2px 8px',
+                            background: 'var(--teal)',
+                            color: 'white',
+                            borderRadius: '12px',
+                            fontSize: '10px',
+                            fontWeight: '600'
+                          }}>
+                            투표 진행중
+                          </div>
+                          <div style={{
+                            padding: '2px 8px',
+                            background: stake.voteType === 'support' ? 'var(--green)' : 
+                                      stake.voteType === 'oppose' ? '#dc3545' : 'var(--text-light)',
+                            color: 'white',
+                            borderRadius: '12px',
+                            fontSize: '10px',
+                            fontWeight: '600'
+                          }}>
+                            {stake.voteType === 'support' ? '찬성' : 
+                             stake.voteType === 'oppose' ? '반대' : '기권'}
+                          </div>
+                        </div>
+                        <h4 style={{
+                          fontSize: '18px',
+                          fontWeight: '600',
+                          marginBottom: '0.5rem',
+                          color: 'var(--text-dark)'
+                        }}>
+                          {stake.policyTitle}
+                        </h4>
+                        <div style={{
+                          display: 'flex',
+                          gap: '2rem',
+                          fontSize: '14px',
+                          marginBottom: '0.5rem'
+                        }}>
+                          <div>
+                            <span style={{ color: 'var(--text-light)' }}>투표한 토큰:</span>
+                            <span style={{ color: 'var(--teal)', fontWeight: '600', marginLeft: '0.5rem' }}>
+                              {stake.stakeAmount} 토큰
+                            </span>
+                          </div>
+                          <div>
+                            <span style={{ color: 'var(--text-light)' }}>예상 리워드:</span>
+                            <span style={{ color: 'var(--green)', fontWeight: '600', marginLeft: '0.5rem' }}>
+                              +{stake.earnedReward}P
+                            </span>
+                          </div>
+                        </div>
+                        <div style={{
+                          fontSize: '12px',
+                          color: 'var(--text-light)'
+                        }}>
+                          투표일: {new Date(stake.timestamp).toLocaleDateString()} • 투표 종료시 토큰 자동 회수 가능
+                        </div>
+                      </div>
+                      <div style={{
+                        padding: '8px 16px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        background: 'rgba(32, 178, 170, 0.1)',
+                        color: 'var(--teal)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                      }}>
+                        <Icon name="lock" size={12} />
+                        토큰 잠김
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Regular Vote History */}
+            {myVotes.length > 0 && (
+              <div>
+                <h4 style={{ 
+                  fontSize: '16px', 
+                  fontWeight: '600', 
+                  marginBottom: '1rem',
+                  color: 'var(--text-dark)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <Icon name="vote" size={16} />
+                  일반 투표 기록 ({myVotes.length})
+                </h4>
+                {myVotes.map(vote => (
+                  <div
+                    key={vote.id}
+                    style={{
+                      background: 'var(--bg-light)',
+                      border: '1px solid var(--border-light)',
+                      borderRadius: '16px',
+                      padding: '1.5rem',
+                      marginBottom: '1rem',
+                    }}
+                  >
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'start',
+                      marginBottom: '1rem'
+                    }}>
+                      <div style={{ flex: 1 }}>
+                        <h4 style={{
+                          fontSize: '18px',
+                          fontWeight: '600',
+                          marginBottom: '0.5rem',
+                          color: 'var(--text-dark)'
+                        }}>
+                          {vote.title}
+                        </h4>
+                        <div style={{
+                          display: 'flex',
+                          gap: '1rem',
+                          fontSize: '14px',
+                          color: 'var(--text-light)'
+                        }}>
+                          <span>{vote.date}</span>
+                          <span>•</span>
+                          <span style={{
+                            color: vote.voteType === 'support' ? 'var(--green)' : 
+                                  vote.voteType === 'oppose' ? '#dc3545' : 'var(--text-light)',
+                            fontWeight: '600'
+                          }}>
+                            {vote.voteType === 'support' ? '찬성' : 
+                             vote.voteType === 'oppose' ? '반대' : '기권'}
+                          </span>
+                        </div>
+                      </div>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem'
+                      }}>
+                        <div style={{
+                          background: 'var(--gradient-teal)',
+                          color: 'white',
+                          padding: '4px 12px',
+                          borderRadius: '20px',
+                          fontSize: '12px',
+                          fontWeight: '600'
+                        }}>
+                          +{vote.points}P
+                        </div>
+                        <div style={{
+                          padding: '4px 12px',
+                          borderRadius: '20px',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          background: vote.status === 'active' ? 'rgba(50, 205, 50, 0.1)' : 'rgba(255, 193, 7, 0.1)',
+                          color: vote.status === 'active' ? 'var(--green)' : '#FFC107'
+                        }}>
+                          {vote.status === 'active' ? '진행중' : '대기중'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* Empty State */}
-            {userStakes.length === 0 && (
+            {myVotes.length === 0 && userStakes.length === 0 && (
               <div style={{
                 textAlign: 'center',
                 padding: '3rem',
                 color: 'var(--text-light)'
               }}>
-                <Icon name="lock" size={48} color="var(--text-light)" style={{ marginBottom: '1rem' }} />
-                <p>아직 스테이킹한 토큰이 없습니다.</p>
-                <p>정책에 투표하여 토큰을 스테이킹해보세요!</p>
+                <Icon name="vote" size={48} color="var(--text-light)" style={{ marginBottom: '1rem' }} />
+                <p>아직 투표한 정책이 없습니다.</p>
+                <p>정책 페이지에서 투표에 참여해보세요!</p>
               </div>
             )}
           </div>
         );
-
-      case 'votes':
-        return (
-          <div>
-            <h3 style={{ marginBottom: '1.5rem', fontSize: '20px', fontWeight: '600' }}>
-              투표 참여 기록 ({myVotes.length})
-            </h3>
-            {myVotes.map(vote => (
-              <div
-                key={vote.id}
-                style={{
-                  background: 'var(--bg-light)',
-                  border: '1px solid var(--border-light)',
-                  borderRadius: '16px',
-                  padding: '1.5rem',
-                  marginBottom: '1rem',
-                }}
-              >
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'start',
-                  marginBottom: '1rem'
-                }}>
-                  <div style={{ flex: 1 }}>
-                    <h4 style={{
-                      fontSize: '18px',
-                      fontWeight: '600',
-                      marginBottom: '0.5rem',
-                      color: 'var(--text-dark)'
-                    }}>
-                      {vote.title}
-                    </h4>
-                    <div style={{
-                      display: 'flex',
-                      gap: '1rem',
-                      fontSize: '14px',
-                      color: 'var(--text-light)'
-                    }}>
-                      <span>{vote.date}</span>
-                      <span>•</span>
-                      <span style={{
-                        color: vote.voteType === 'support' ? 'var(--green)' : 
-                              vote.voteType === 'oppose' ? '#dc3545' : 'var(--text-light)',
-                        fontWeight: '600'
-                      }}>
-                        {vote.voteType === 'support' ? '찬성' : 
-                         vote.voteType === 'oppose' ? '반대' : '기권'}
-                      </span>
-                    </div>
-                  </div>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '1rem'
-                  }}>
-                    <div style={{
-                      background: 'var(--gradient-teal)',
-                      color: 'white',
-                      padding: '4px 12px',
-                      borderRadius: '20px',
-                      fontSize: '12px',
-                      fontWeight: '600'
-                    }}>
-                      +{vote.points}P
-                    </div>
-                    <div style={{
-                      padding: '4px 12px',
-                      borderRadius: '20px',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      background: vote.status === 'active' ? 'rgba(50, 205, 50, 0.1)' : 'rgba(255, 193, 7, 0.1)',
-                      color: vote.status === 'active' ? 'var(--green)' : '#FFC107'
-                    }}>
-                      {vote.status === 'active' ? '진행중' : '대기중'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        );
-
-      case 'proposals':
         return (
           <div>
             <h3 style={{ marginBottom: '1.5rem', fontSize: '20px', fontWeight: '600' }}>
@@ -761,9 +840,8 @@ export const MyPage: React.FC = () => {
           marginBottom: '2rem'
         }}>
           {[
-            { key: 'stakes', label: '스테이킹 관리' },
+            { key: 'votes', label: '투표 관리' },
             { key: 'proposals', label: '제안한 정책' },
-            { key: 'votes', label: '투표 기록' },
             { key: 'discussions', label: '토론 참여' }
           ].map(tab => (
             <button
