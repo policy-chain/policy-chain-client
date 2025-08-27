@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWallet } from '../../context/WalletContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { formatAddress } from '../../utils/wallet';
@@ -11,9 +11,34 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange }) => {
-  const { address, isConnected, isConnecting, connectMetamask, connectPhantom, disconnect } = useWallet();
+  const { 
+    address, 
+    isConnected, 
+    isConnecting, 
+    connectMetamask, 
+    connectPhantom, 
+    connectTrust,
+    connectWalletConnect,
+    connectCoinbase,
+    connectKaia,
+    connectOKX,
+    disconnect,
+    error
+  } = useWallet();
   const { t } = useLanguage();
   const [showWalletDropdown, setShowWalletDropdown] = useState(false);
+  const [showError, setShowError] = useState(false);
+
+  // 에러가 발생하면 자동으로 닫기
+  useEffect(() => {
+    if (error) {
+      setShowError(true);
+      const timer = setTimeout(() => {
+        setShowError(false);
+      }, 5000); // 5초 후 자동 숨김
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   const menuItems = [
     { key: 'dashboard', label: { en: 'Dashboard', ko: '대시보드' } },
@@ -72,7 +97,6 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
           PolicyChain
         </div>
 
-        {/* Navigation */}
         {/* Navigation - Center */}
         <nav style={{
           position: 'absolute',
@@ -256,11 +280,31 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
                       transition: 'background 0.3s',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px'
+                      gap: '8px',
+                      justifyContent: 'space-between'
                     }}
                   >
-                    <WalletIcon wallet="metamask" size={20} />
-                    MetaMask
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}>
+                      <WalletIcon wallet="metamask" size={20} />
+                      MetaMask
+                    </div>
+                    <span style={{
+                      fontSize: '10px',
+                      color: '#10B981',
+                      fontWeight: '500',
+                      padding: '2px 6px',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(16, 185, 129, 0.3)',
+                      backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                      display: 'inline-block',
+                      lineHeight: '1.2'
+                    }}>
+                      권장
+                    </span>
                   </button>
                   <button
                     onClick={() => {
@@ -283,12 +327,179 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
                     <WalletIcon wallet="phantom" size={20} />
                     Phantom
                   </button>
+                  <button
+                    onClick={() => {
+                      connectTrust();
+                      setShowWalletDropdown(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      background: 'none',
+                      border: 'none',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      transition: 'background 0.3s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      justifyContent: 'space-between'
+                    }}
+                  >
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}>
+                      <WalletIcon wallet="trust" size={20} />
+                      Trust Wallet
+                    </div>
+                    <span style={{
+                      fontSize: '10px',
+                      color: '#10B981',
+                      fontWeight: '500',
+                      padding: '2px 6px',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(16, 185, 129, 0.3)',
+                      backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                      display: 'inline-block',
+                      lineHeight: '1.2'
+                    }}>
+                      권장
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      connectKaia();
+                      setShowWalletDropdown(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      background: 'none',
+                      border: 'none',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      transition: 'background 0.3s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <WalletIcon wallet="kaia" size={20} />
+                    Kaia Wallet
+                  </button>
+                  <button
+                    onClick={() => {
+                      connectCoinbase();
+                      setShowWalletDropdown(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      background: 'none',
+                      border: 'none',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      transition: 'background 0.3s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <WalletIcon wallet="coinbase" size={20} />
+                    Coinbase Wallet
+                  </button>
+                  <button
+                    onClick={() => {
+                      connectOKX();
+                      setShowWalletDropdown(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      background: 'none',
+                      border: 'none',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      transition: 'background 0.3s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <WalletIcon wallet="okx" size={20} />
+                    OKX Wallet
+                  </button>
+                  <button
+                    onClick={() => {
+                      connectWalletConnect();
+                      setShowWalletDropdown(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      background: 'none',
+                      border: 'none',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      transition: 'background 0.3s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <WalletIcon wallet="walletconnect" size={20} />
+                    WalletConnect
+                  </button>
                 </div>
               )}
             </div>
           )}
         </div>
       </div>
+
+      {/* 에러 토스트 */}
+      {showError && error && (
+        <div style={{
+          position: 'fixed',
+          top: '100px',
+          right: '20px',
+          background: '#dc3545',
+          color: 'white',
+          padding: '12px 20px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          zIndex: 10000,
+          maxWidth: '400px',
+          animation: 'slideIn 0.3s ease-out'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            <div style={{ fontSize: '14px', lineHeight: '1.4' }}>
+              {error}
+            </div>
+            <button
+              onClick={() => setShowError(false)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: '18px',
+                padding: '0',
+                lineHeight: '1'
+              }}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

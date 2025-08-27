@@ -1,7 +1,16 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { ethers } from 'ethers';
-import { WalletContextType } from '../types/wallet';
-import { switchToKaiaTestnet, getNetworkName, isMetamaskInstalled, isPhantomInstalled } from '../utils/wallet';
+import { WalletContextType, WalletType } from '../types/wallet';
+import { 
+  switchToKaiaTestnet, 
+  getNetworkName, 
+  isMetamaskInstalled, 
+  isPhantomInstalled,
+  isKaiaInstalled,
+  isCoinbaseInstalled,
+  isTrustInstalled,
+  isOKXInstalled
+} from '../utils/wallet';
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
@@ -40,16 +49,43 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const restoreConnection = useCallback(async () => {
     const wasConnected = localStorage.getItem('walletConnected') === 'true';
     const savedAddress = localStorage.getItem('walletAddress');
-    const walletType = localStorage.getItem('walletType');
+    const walletType = localStorage.getItem('walletType') as WalletType;
     
     if (wasConnected && savedAddress && walletType) {
       try {
         let targetProvider;
         
-        if (walletType === 'metamask' && isMetamaskInstalled()) {
-          targetProvider = window.ethereum.providers?.find((provider: any) => provider.isMetaMask) || window.ethereum;
-        } else if (walletType === 'phantom' && isPhantomInstalled()) {
-          targetProvider = window.phantom!.ethereum;
+        switch (walletType) {
+          case 'metamask':
+            if (isMetamaskInstalled()) {
+              targetProvider = window.ethereum.providers?.find((provider: any) => provider.isMetaMask) || window.ethereum;
+            }
+            break;
+          case 'phantom':
+            if (isPhantomInstalled()) {
+              targetProvider = window.phantom!.ethereum;
+            }
+            break;
+          case 'kaia':
+            if (isKaiaInstalled()) {
+              targetProvider = window.kaia;
+            }
+            break;
+          case 'coinbase':
+            if (isCoinbaseInstalled()) {
+              targetProvider = window.ethereum.providers?.find((provider: any) => provider.isCoinbaseWallet) || window.ethereum;
+            }
+            break;
+          case 'trust':
+            if (isTrustInstalled()) {
+              targetProvider = window.ethereum.providers?.find((provider: any) => provider.isTrust) || window.ethereum;
+            }
+            break;
+          case 'okx':
+            if (isOKXInstalled()) {
+              targetProvider = window.okxwallet;
+            }
+            break;
         }
         
         if (targetProvider) {
@@ -123,7 +159,9 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const connectMetamask = async () => {
     if (!isMetamaskInstalled()) {
-      setError('메타마스크가 설치되어 있지 않습니다.');
+      // MetaMask 설치 페이지로 리다이렉트
+      window.open('https://metamask.io/download/', '_blank');
+      setError('MetaMask를 먼저 설치해주세요.');
       return;
     }
 
@@ -160,7 +198,9 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const connectPhantom = async () => {
     if (!isPhantomInstalled()) {
-      setError('팬텀 지갑이 설치되어 있지 않습니다.');
+      // Phantom 설치 페이지로 리다이렉트
+      window.open('https://phantom.app/', '_blank');
+      setError('Phantom 지갑을 먼저 설치해주세요.');
       return;
     }
 
@@ -205,12 +245,167 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     console.log('지갑 연결 해제');
   };
 
+  const connectKaia = async () => {
+    if (!isKaiaInstalled()) {
+      // Kaia Wallet 설치 페이지로 리다이렉트
+      window.open('https://www.kaiawallet.io/ko_KR/', '_blank');
+      setError('Kaia Wallet을 먼저 설치해주세요.');
+      return;
+    }
+
+    setIsConnecting(true);
+    setError(null);
+
+    try {
+      await window.kaia.enable();
+      const provider = new ethers.BrowserProvider(window.kaia);
+      const signer = await provider.getSigner();
+      const address = await signer.getAddress();
+      
+      await switchToKaiaTestnet(window.kaia);
+      await updateNetworkInfo(provider);
+      
+      setProvider(provider);
+      setAddress(address);
+      setIsConnected(true);
+      
+      saveConnectionState(address, 'kaia');
+      
+      console.log('Kaia Wallet 연결 성공:', address);
+    } catch (error: any) {
+      console.error('Kaia Wallet 연결 실패:', error);
+      setError(error.message || 'Kaia Wallet 연결에 실패했습니다.');
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const connectWalletConnect = async () => {
+    // WalletConnect 설치 가이드로 리다이렉트
+    window.open('https://userguide.dcentwallet.com/kr/native-service/dapp-browser/using-wallet-connect', '_blank');
+    setError('WalletConnect를 지원하는 모바일 지갑을 사용해주세요. (예: D\'CENT Wallet)');
+  };
+
+  const connectCoinbase = async () => {
+    if (!isCoinbaseInstalled()) {
+      // Coinbase Wallet 설치 페이지로 리다이렉트
+      window.open('https://www.coinbase.com/wallet', '_blank');
+      setError('Coinbase Wallet을 먼저 설치해주세요.');
+      return;
+    }
+
+    setIsConnecting(true);
+    setError(null);
+
+    try {
+      const coinbaseProvider = window.ethereum.providers?.find((provider: any) => provider.isCoinbaseWallet) || window.ethereum;
+      
+      await coinbaseProvider.request({ method: 'eth_requestAccounts' });
+      const provider = new ethers.BrowserProvider(coinbaseProvider);
+      const signer = await provider.getSigner();
+      const address = await signer.getAddress();
+      
+      await switchToKaiaTestnet(coinbaseProvider);
+      await updateNetworkInfo(provider);
+      
+      setProvider(provider);
+      setAddress(address);
+      setIsConnected(true);
+      
+      saveConnectionState(address, 'coinbase');
+      
+      console.log('Coinbase Wallet 연결 성공:', address);
+    } catch (error: any) {
+      console.error('Coinbase 연결 실패:', error);
+      setError(error.message || 'Coinbase Wallet 연결에 실패했습니다.');
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const connectTrust = async () => {
+    if (!isTrustInstalled()) {
+      // Trust Wallet 설치 페이지로 리다이렉트
+      window.open('https://trustwallet.com/', '_blank');
+      setError('Trust Wallet을 먼저 설치해주세요.');
+      return;
+    }
+
+    setIsConnecting(true);
+    setError(null);
+
+    try {
+      const trustProvider = window.ethereum.providers?.find((provider: any) => provider.isTrust) || window.ethereum;
+      
+      await trustProvider.request({ method: 'eth_requestAccounts' });
+      const provider = new ethers.BrowserProvider(trustProvider);
+      const signer = await provider.getSigner();
+      const address = await signer.getAddress();
+      
+      await switchToKaiaTestnet(trustProvider);
+      await updateNetworkInfo(provider);
+      
+      setProvider(provider);
+      setAddress(address);
+      setIsConnected(true);
+      
+      saveConnectionState(address, 'trust');
+      
+      console.log('Trust Wallet 연결 성공:', address);
+    } catch (error: any) {
+      console.error('Trust Wallet 연결 실패:', error);
+      setError(error.message || 'Trust Wallet 연결에 실패했습니다.');
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const connectOKX = async () => {
+    if (!isOKXInstalled()) {
+      // OKX Wallet 설치 페이지로 리다이렉트
+      window.open('https://web3.okx.com/download', '_blank');
+      setError('OKX Wallet을 먼저 설치해주세요.');
+      return;
+    }
+
+    setIsConnecting(true);
+    setError(null);
+
+    try {
+      await window.okxwallet.request({ method: 'eth_requestAccounts' });
+      const provider = new ethers.BrowserProvider(window.okxwallet);
+      const signer = await provider.getSigner();
+      const address = await signer.getAddress();
+      
+      await switchToKaiaTestnet(window.okxwallet);
+      await updateNetworkInfo(provider);
+      
+      setProvider(provider);
+      setAddress(address);
+      setIsConnected(true);
+      
+      saveConnectionState(address, 'okx');
+      
+      console.log('OKX Wallet 연결 성공:', address);
+    } catch (error: any) {
+      console.error('OKX Wallet 연결 실패:', error);
+      setError(error.message || 'OKX Wallet 연결에 실패했습니다.');
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
   const value = {
     address,
     isConnected,
     isConnecting,
     connectMetamask,
     connectPhantom,
+    connectKaia,
+    connectWalletConnect,
+    connectCoinbase,
+    connectTrust,
+    connectOKX,
     disconnect,
     provider,
     network,

@@ -6,6 +6,18 @@ PolicyChain: Stake tokens to participate in policy decisions, earn rewards when 
 
 Live Site: [https://policy-chain-client.vercel.app](https://policy-chain-client.vercel.app)
 
+## 지원하는 지갑
+
+- MetaMask (메타마스크)
+- Phantom (팬텀)
+- Kaia Wallet (카이아 지갑 - 공식)
+- Coinbase Wallet (코인베이스 월렛)
+- Trust Wallet (트러스트 월렛)
+- OKX Wallet (OKX 월렛)
+- WalletConnect (월렛커넥트) - 추후 지원 예정
+
+모든 지갑은 카이아(Kaia) 테스트넷을 지원합니다.
+
 ## 주요 기능
 
 - 지갑 연결 (MetaMask, Phantom)

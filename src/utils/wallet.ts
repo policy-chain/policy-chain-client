@@ -16,6 +16,28 @@ export const isPhantomInstalled = (): boolean => {
          typeof window.phantom?.ethereum !== 'undefined';
 };
 
+export const isKaiaInstalled = (): boolean => {
+  return typeof window !== 'undefined' && 
+         typeof window.kaia !== 'undefined';
+};
+
+export const isCoinbaseInstalled = (): boolean => {
+  return typeof window !== 'undefined' && 
+         typeof window.ethereum !== 'undefined' && 
+         window.ethereum.isCoinbaseWallet;
+};
+
+export const isTrustInstalled = (): boolean => {
+  return typeof window !== 'undefined' && 
+         typeof window.ethereum !== 'undefined' && 
+         window.ethereum.isTrust;
+};
+
+export const isOKXInstalled = (): boolean => {
+  return typeof window !== 'undefined' && 
+         typeof window.okxwallet !== 'undefined';
+};
+
 export const switchToKaiaTestnet = async (provider?: any): Promise<void> => {
   const targetProvider = provider || window.ethereum;
   if (!targetProvider) throw new Error('지갑이 설치되어 있지 않습니다');
@@ -41,6 +63,8 @@ export const getNetworkName = (chainId: number): string => {
   switch (chainId) {
     case 1001:
       return 'Kaia Testnet';
+    case 8217:
+      return 'Kaia Mainnet';
     case 1:
       return 'Ethereum Mainnet';
     case 5:
@@ -57,5 +81,7 @@ declare global {
     phantom?: {
       ethereum?: any;
     };
+    kaia?: any;
+    okxwallet?: any;
   }
 }
