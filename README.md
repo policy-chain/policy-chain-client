@@ -1,78 +1,154 @@
 # PolicyChain Client
-
-PolicyChain: Stake tokens to participate in policy decisions, earn rewards when voting concludes.
+A decentralized platform where citizens can stake tokens to participate in policy decisions and earn rewards based on voting outcomes. Built for democratic participation through blockchain technology.
 
 ## Live Demo
+**Live Site**: [https://policy-chain-client.vercel.app](https://policy-chain-client.vercel.app)
 
-Live Site: [https://policy-chain-client.vercel.app](https://policy-chain-client.vercel.app)
+## Overview
+PolicyChain enables democratic participation through a token-staking mechanism where users:
+- Stake tokens on policy proposals they believe in
+- Vote for support, opposition, or abstention
+- Earn rewards when voting concludes based on participation and outcomes
+- Build reputation through consistent civic engagement
 
-## 지원하는 지갑
+## Supported Wallets
+- **MetaMask** - Browser extension wallet
+- **Phantom** - Multi-chain wallet with EVM support
+- **Kaia Wallet** - Official Kaia blockchain wallet
+- **Coinbase Wallet** - Self-custody wallet
+- **Trust Wallet** - Mobile-first wallet
+- **OKX Wallet** - Multi-chain wallet
+- **WalletConnect** - Universal wallet connection (coming soon)
 
-- MetaMask (메타마스크)
-- Phantom (팬텀)
-- Kaia Wallet (카이아 지갑 - 공식)
-- Coinbase Wallet (코인베이스 월렛)
-- Trust Wallet (트러스트 월렛)
-- OKX Wallet (OKX 월렛)
-- WalletConnect (월렛커넥트) - 추후 지원 예정
+All wallets connect to the Kaia testnet automatically.
 
-모든 지갑은 카이아(Kaia) 테스트넷을 지원합니다.
+## Key Features
+### Core Functionality
+- **Wallet Integration**: Seamless connection with multiple wallet providers
+- **Automatic Network Setup**: Auto-connects to Kaia testnet
+- **Staking System**: Token-based voting with economic incentives
+- **Reward Distribution**: Automated rewards based on participation and outcomes
+- **Multi-language Support**: Korean and English interface
+- **Responsive Design**: Optimized for desktop and mobile
 
-## 주요 기능
+### User Experience
+- **Dashboard**: Overview of active policies and user stats
+- **Policy Voting**: Browse and participate in policy decisions
+- **Community**: Discussion forums for policy debate
+- **Rewards**: Track earnings and claim rewards
+- **My Page**: Personal voting history and stake management
 
-- 지갑 연결 (MetaMask, Phantom)
-- 카이아 테스트넷 자동 연결
-- 스테이킹 투표 시스템
-- 토큰 회수 및 리워드 시스템
-- 다국어 지원 (한국어/영어)
-- 반응형 디자인
+## Technology Stack
+- **Frontend**: React 18 with TypeScript
+- **Blockchain**: Ethers.js for Web3 integration
+- **Styling**: CSS3 with responsive design
+- **Deployment**: Vercel with automatic CI/CD
+- **Network**: Kaia blockchain testnet
 
-## 기술 스택
+## Installation and Development
+### Prerequisites
+- Node.js 16 or higher
+- Wallet browser extension (MetaMask, Phantom, etc.)
 
-- React 18
-- TypeScript
-- Ethers.js
-- Vercel (자동 배포)
-
-## 설치 및 실행
-
+### Setup
 ```bash
-# 의존성 설치
+# Clone the repository
+git clone [repository-url]
+cd policy-chain-client
+
+# Install dependencies
 npm install
+# or
+yarn install
 
-# 개발 서버 실행
+# Start development server
 npm start
+# or
+yarn start
 
-# 빌드
+# Build for production
 npm run build
+# or
+yarn build
 ```
 
-## 자동 배포
+The application will be available at `http://localhost:3000`
 
-이 프로젝트는 `main` 브랜치에 push할 때마다 Vercel에서 자동으로 배포됩니다.
-
-## 프로젝트 구조
-
+## Project Structure
 ```
 src/
-├── components/         # 재사용 가능한 컴포넌트
-│   ├── common/        # 공통 컴포넌트
-│   ├── layout/        # 레이아웃 컴포넌트
-│   ├── policy/        # 정책 관련 컴포넌트
-│   └── discussion/    # 토론 관련 컴포넌트
-├── context/           # React Context
-├── pages/             # 페이지 컴포넌트
-├── types/             # TypeScript 타입 정의
-└── utils/             # 유틸리티 함수
+├── components/          # Reusable UI components
+│   ├── common/         # Shared components (buttons, inputs, etc.)
+│   ├── layout/         # Layout components (header, navigation)
+│   ├── policy/         # Policy-specific components
+│   └── discussion/     # Community discussion components
+├── context/            # React Context providers
+│   ├── WalletContext.tsx    # Wallet connection and state
+│   └── LanguageContext.tsx  # Internationalization
+├── pages/              # Main application pages
+│   ├── Dashboard.tsx        # Overview and statistics
+│   ├── Policies.tsx         # Policy voting interface
+│   ├── Community.tsx        # Discussion forums
+│   ├── Rewards.tsx          # Reward tracking and claiming
+│   └── MyPage.tsx          # User profile and history
+├── types/              # TypeScript type definitions
+├── utils/              # Utility functions and constants
+└── styles/             # Global CSS styles
 ```
 
-## 지갑 연결
+## Configuration
+### Wallet Setup
+The application automatically configures supported wallets to connect to the Kaia testnet. Users need to:
+1. Install a supported wallet extension
+2. Create or import a wallet
+3. Connect to the PolicyChain application
+4. Approve the Kaia testnet addition if prompted
 
-- MetaMask: 브라우저 확장 프로그램
-- Phantom: 브라우저 확장 프로그램 (EVM 지원 필요)
-- 자동으로 카이아 테스트넷으로 연결됩니다
+### Environment Variables
+No additional environment variables are required for basic functionality.
 
-## 개발 환경
+## Deployment
+### Automatic Deployment
+This project uses Vercel for continuous deployment:
+- Pushes to `main` branch automatically deploy to production
+- Pull requests generate preview deployments
+- Build configuration is handled by `vercel.json`
 
-- Node.js 16+
-- 지갑 확장 프로그램 설치 필요
+### Manual Deployment
+```bash
+# Build the project
+npm run build
+
+# Deploy to your preferred hosting platform
+# (The build folder contains the static files)
+```
+
+## Smart Contract Integration
+The application integrates with smart contracts on the Kaia blockchain for:
+- Token staking and management
+- Vote recording and validation
+- Reward calculation and distribution
+- Policy lifecycle management
+
+## Contributing
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Development Guidelines
+- Follow TypeScript best practices
+- Maintain responsive design principles
+- Ensure wallet compatibility across providers
+- Test thoroughly on Kaia testnet
+- Update documentation for new features
+
+## Support
+For technical support or questions:
+- Check the live demo for current functionality
+- Review the codebase for implementation details
+- Test features on the Kaia testnet
+
+## License
+This project is part of a hackathon submission and is provided for educational and demonstration purposes.
