@@ -19,7 +19,8 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
     { key: 'dashboard', label: { en: 'Dashboard', ko: '대시보드' } },
     { key: 'community', label: { en: 'Community', ko: '커뮤니티' } },
     { key: 'policies', label: { en: 'Policies', ko: '정책' } },
-    { key: 'rewards', label: { en: 'Rewards', ko: '리워드' } }
+    { key: 'rewards', label: { en: 'Rewards', ko: '리워드' } },
+    ...(isConnected ? [{ key: 'mypage', label: { en: 'My Page', ko: '마이페이지' } }] : [])
   ];
 
   return (
