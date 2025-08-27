@@ -77,7 +77,7 @@ export const Community: React.FC = () => {
         {/* Discussion Categories */}
         <div style={{
           display: 'flex',
-          gap: '1rem',
+          gap: '10px',
           marginBottom: '2rem'
         }}>
           {filterTabs.map(tab => (

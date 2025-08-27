@@ -1,11 +1,22 @@
 import React from 'react';
-import { useWallet } from '../../context/WalletContext';
-import { useLanguage } from '../../context/LanguageContext';
 import { Icon } from '../common/Icon';
 
 export const RightSidebar: React.FC = () => {
-  const { isConnected } = useWallet();
-  const { t } = useLanguage();
+  // 모의 지갑 주소 데이터
+  const leaderboardData = [
+    { address: '0x1a2b3c4d5e6f7890', score: 12450 },
+    { address: '0x9876543210abcdef', score: 11230 },
+    { address: '0xfedcba0987654321', score: 9870 }
+  ];
+
+  const formatAddress = (address: string) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
+  const copyToClipboard = (address: string) => {
+    navigator.clipboard.writeText(address);
+    alert('주소가 복사되었습니다!');
+  };
 
   return (
     <aside style={{
@@ -278,134 +289,121 @@ export const RightSidebar: React.FC = () => {
           상위 기여자
         </h3>
         <div>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '1rem 0',
-            borderBottom: '1px solid var(--border-light)'
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px'
-            }}>
+          {leaderboardData.map((user, index) => (
+            <div
+              key={user.address}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '1rem 0',
+                borderBottom: index < leaderboardData.length - 1 ? '1px solid var(--border-light)' : 'none',
+                position: 'relative',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(32, 178, 170, 0.05)';
+                e.currentTarget.style.borderRadius = '8px';
+                // 툴팁 표시
+                const tooltip = e.currentTarget.querySelector('.tooltip') as HTMLElement;
+                if (tooltip) {
+                  tooltip.style.visibility = 'visible';
+                  tooltip.style.opacity = '1';
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderRadius = '0px';
+                // 툴팁 숨김
+                const tooltip = e.currentTarget.querySelector('.tooltip') as HTMLElement;
+                if (tooltip) {
+                  tooltip.style.visibility = 'hidden';
+                  tooltip.style.opacity = '0';
+                }
+              }}
+              onClick={() => copyToClipboard(user.address)}
+              title={`클릭하여 주소 복사: ${user.address}`}
+            >
               <div style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                background: 'var(--gradient-purple)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontSize: '14px',
-                fontWeight: '600'
+                gap: '12px'
               }}>
-                K
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'var(--gradient-purple)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  overflow: 'hidden'
+                }}>
+                  <img 
+                    src="/images/user-icon.png"
+                    alt="User Profile"
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      objectFit: 'contain',
+                      filter: 'brightness(0) invert(1)'
+                    }}
+                  />
+                </div>
+                <div style={{
+                  fontWeight: '500',
+                  color: 'var(--text-dark)',
+                  fontFamily: 'monospace'
+                }}>
+                  {formatAddress(user.address)}
+                </div>
               </div>
               <div style={{
-                fontWeight: '500',
-                color: 'var(--text-dark)'
+                fontWeight: '600',
+                background: 'var(--gradient-teal)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
               }}>
-                Kim J.
+                {user.score.toLocaleString()}
+              </div>
+              
+              {/* 툴팁 */}
+              <div 
+                className="tooltip"
+                style={{
+                  position: 'absolute',
+                  bottom: '100%',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  marginBottom: '8px',
+                  background: 'rgba(0, 0, 0, 0.8)',
+                  color: 'white',
+                  padding: '8px 12px',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  whiteSpace: 'nowrap',
+                  visibility: 'hidden',
+                  opacity: '0',
+                  transition: 'opacity 0.3s ease, visibility 0.3s ease',
+                  zIndex: 1000,
+                  fontFamily: 'monospace'
+                }}
+              >
+                {user.address}
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  borderLeft: '4px solid transparent',
+                  borderRight: '4px solid transparent',
+                  borderTop: '4px solid rgba(0, 0, 0, 0.8)'
+                }} />
               </div>
             </div>
-            <div style={{
-              fontWeight: '600',
-              background: 'var(--gradient-teal)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
-              12,450
-            </div>
-          </div>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '1rem 0',
-            borderBottom: '1px solid var(--border-light)'
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px'
-            }}>
-              <div style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                background: 'var(--gradient-purple)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontSize: '14px',
-                fontWeight: '600'
-              }}>
-                L
-              </div>
-              <div style={{
-                fontWeight: '500',
-                color: 'var(--text-dark)'
-              }}>
-                Lee S.
-              </div>
-            </div>
-            <div style={{
-              fontWeight: '600',
-              background: 'var(--gradient-teal)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
-              11,230
-            </div>
-          </div>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '1rem 0'
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px'
-            }}>
-              <div style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                background: 'var(--gradient-purple)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontSize: '14px',
-                fontWeight: '600'
-              }}>
-                P
-              </div>
-              <div style={{
-                fontWeight: '500',
-                color: 'var(--text-dark)'
-              }}>
-                Park M.
-              </div>
-            </div>
-            <div style={{
-              fontWeight: '600',
-              background: 'var(--gradient-teal)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
-              9,870
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </aside>

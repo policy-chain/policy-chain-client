@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useWallet } from '../context/WalletContext';
 import { Icon } from '../components/common/Icon';
 import { Sidebar } from '../components/layout/Sidebar';
 import { RightSidebar } from '../components/layout/RightSidebar';
 
 export const MyPage: React.FC = () => {
   const { t } = useLanguage();
+  const { address } = useWallet();
   const [activeTab, setActiveTab] = useState('votes');
+
+  // 주소 포맷팅 함수
+  const formatAddress = (addr: string) => {
+    if (!addr) return '';
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  };
 
   // 모의 데이터
   const myVotes = [
@@ -427,15 +435,22 @@ export const MyPage: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'white',
-            fontSize: '32px',
-            fontWeight: '700'
+            overflow: 'hidden'
           }}>
-            나
+            <img 
+              src="/images/user-icon.png"
+              alt="User Profile"
+              style={{
+                width: '50px',
+                height: '50px',
+                objectFit: 'contain',
+                filter: 'brightness(0) invert(1)' // 흰색으로 변경
+              }}
+            />
           </div>
           <div style={{ flex: 1 }}>
             <h3 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '0.5rem' }}>
-              정책참여자
+              {address ? formatAddress(address) : '지갑 주소'}
             </h3>
             <div style={{
               display: 'flex',

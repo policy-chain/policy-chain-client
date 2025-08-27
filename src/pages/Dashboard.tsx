@@ -17,7 +17,8 @@ export const Dashboard: React.FC = () => {
     const matchesFilter = 
       filter === 'all' || 
       (filter === 'voting' && policy.status === 'active') ||
-      (filter === 'pending' && policy.status === 'pending');
+      (filter === 'pending' && policy.status === 'pending') ||
+      (filter === 'closed' && policy.status === 'closed');
     
     const matchesCategory = category === 'all' || policy.category === category;
     
@@ -50,7 +51,8 @@ export const Dashboard: React.FC = () => {
   const filterTabs = [
     { key: 'all', label: '전체' },
     { key: 'voting', label: '투표중' },
-    { key: 'pending', label: '대기중' }
+    { key: 'pending', label: '대기중' },
+    { key: 'closed', label: '종료됨' }
   ];
 
   return (
@@ -98,7 +100,7 @@ export const Dashboard: React.FC = () => {
           
           <div style={{
             display: 'flex',
-            gap: '1rem'
+            gap: '10px'
           }}>
             {filterTabs.map(tab => (
               <div
