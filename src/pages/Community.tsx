@@ -133,7 +133,7 @@ export const Community: React.FC = () => {
                 setIsDiscussionModalOpen(true);
               }}
               style={{
-                background: 'var(--bg-white)',
+                background: 'var(--bg-white)', 
                 border: '1px solid var(--border-light)',
                 borderRadius: '16px',
                 padding: '1.5rem',
