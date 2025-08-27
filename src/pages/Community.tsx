@@ -123,7 +123,7 @@ export const Community: React.FC = () => {
           ))}
         </div>
 
-        {/* Discussion List */}
+        {/* Discussion List */} 
         <div>
           {filteredDiscussions.map(discussion => (
             <div
