@@ -5,9 +5,10 @@ interface IconProps {
   size?: number;
   color?: string;
   className?: string;
+  style?: React.CSSProperties;
 }
 
-export const Icon: React.FC<IconProps> = ({ name, size = 20, color = 'currentColor', className = '' }) => {
+export const Icon: React.FC<IconProps> = ({ name, size = 20, color = 'currentColor', className = '', style = {} }) => {
   const icons: Record<string, string> = {
     wallet: 'M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586l-3.293-3.293a1 1 0 00-1.414 0L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0L17 5.414 20.293 8.707A1 1 0 0022 8V4a1 1 0 00-1-1z',
     vote: 'M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6m4-3l6 6-6 6',
@@ -35,6 +36,7 @@ export const Icon: React.FC<IconProps> = ({ name, size = 20, color = 'currentCol
       strokeLinecap="round" 
       strokeLinejoin="round"
       className={className}
+      style={style}
     >
       <path d={pathData} />
     </svg>

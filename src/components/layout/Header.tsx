@@ -103,21 +103,22 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
           gap: '1rem'
         }}>
           {/* Language Toggle */}
-          <Button
+          <button
             onClick={toggleLanguage}
-            variant="secondary"
-            size="small"
             style={{
               background: 'var(--gradient-teal)',
               color: 'white',
               border: 'none',
               padding: '8px 16px',
               borderRadius: '20px',
-              fontSize: '14px'
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
             }}
           >
             {currentLang === 'en' ? '한국어' : 'EN'}
-          </Button>
+          </button>
 
           {/* Wallet Connection */}
           {isConnected ? (
