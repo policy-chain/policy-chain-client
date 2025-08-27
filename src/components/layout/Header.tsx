@@ -12,14 +12,14 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange }) => {
   const { address, isConnected, isConnecting, connectMetamask, connectPhantom, disconnect } = useWallet();
-  const { currentLang, toggleLanguage, t } = useLanguage();
+  const { t } = useLanguage();
   const [showWalletDropdown, setShowWalletDropdown] = useState(false);
 
   const menuItems = [
     { key: 'dashboard', label: { en: 'Dashboard', ko: '대시보드' } },
-    { key: 'policies', label: { en: 'Policies', ko: '정책' } },
     { key: 'community', label: { en: 'Community', ko: '커뮤니티' } },
-    { key: 'rewards', label: { en: 'Rewards', ko: '보상' } }
+    { key: 'policies', label: { en: 'Policies', ko: '정책' } },
+    { key: 'rewards', label: { en: 'Rewards', ko: '리워드' } }
   ];
 
   return (
@@ -39,14 +39,16 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
         margin: '0 auto',
         padding: '0 2rem',
         display: 'flex',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        height: '80px'
+        height: '80px',
+        position: 'relative'
       }}>
-        {/* Logo */}
+        {/* Logo - Left */}
         <div 
           onClick={() => onSectionChange('dashboard')}
           style={{
+            position: 'absolute',
+            left: '2rem',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
@@ -70,7 +72,11 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
         </div>
 
         {/* Navigation */}
+        {/* Navigation - Center */}
         <nav style={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
           display: 'flex',
           alignItems: 'center',
           gap: '2rem'
@@ -95,30 +101,14 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
           ))}
         </nav>
 
-        {/* User Menu */}
+        {/* User Menu - Right */}
         <div style={{
+          position: 'absolute',
+          right: '2rem',
           display: 'flex',
           alignItems: 'center',
           gap: '1rem'
         }}>
-          {/* Language Toggle */}
-          <button
-            onClick={toggleLanguage}
-            style={{
-              background: 'var(--gradient-teal)',
-              color: 'white',
-              border: 'none',
-              padding: '8px 16px',
-              borderRadius: '20px',
-              fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            {currentLang === 'en' ? '한국어' : 'EN'}
-          </button>
-
           {/* Wallet Connection */}
           {isConnected ? (
             <div style={{ position: 'relative' }}>

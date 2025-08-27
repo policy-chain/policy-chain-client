@@ -1,28 +1,17 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
-import { Language } from '../types';
+import React, { createContext, useContext } from 'react';
 
 interface LanguageContextType {
-  currentLang: Language;
-  toggleLanguage: () => void;
   t: (key: { en: string; ko: string }) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentLang, setCurrentLang] = useState<Language>('ko');
-
-  const toggleLanguage = useCallback(() => {
-    setCurrentLang(prev => prev === 'en' ? 'ko' : 'en');
-  }, []);
-
-  const t = useCallback((key: { en: string; ko: string }): string => {
-    return key[currentLang];
-  }, [currentLang]);
+  const t = (key: { en: string; ko: string }): string => {
+    return key.ko; // Always return Korean
+  };
 
   const value = {
-    currentLang,
-    toggleLanguage,
     t
   };
 

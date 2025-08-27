@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { PointHistory, Achievement } from '../types';
 import { mockPointHistory, mockAchievements } from '../utils/mockData';
 import { useLanguage } from '../context/LanguageContext';
 import { Icon } from '../components/common/Icon';
@@ -74,7 +73,7 @@ export const Rewards: React.FC = () => {
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text'
           }}>
-            {t({ en: 'Rewards & Achievements', ko: '보상 & 업적' })}
+            {t({ en: 'Rewards & Achievements', ko: '리워드' })}
           </h1>
         </div>
 

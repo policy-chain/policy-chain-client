@@ -5,19 +5,22 @@ import { useLanguage } from '../context/LanguageContext';
 import { Icon } from '../components/common/Icon';
 import { Sidebar } from '../components/layout/Sidebar';
 import { RightSidebar } from '../components/layout/RightSidebar';
+import { DiscussionModal } from '../components/discussion/DiscussionModal';
 
 export const Community: React.FC = () => {
   const { t } = useLanguage();
-  const [discussions, setDiscussions] = useState<Discussion[]>(mockDiscussions);
+  const [discussions] = useState<Discussion[]>(mockDiscussions);
   const [category, setCategory] = useState('all');
   const [filter, setFilter] = useState('all');
+  const [selectedDiscussion, setSelectedDiscussion] = useState<Discussion | undefined>(undefined);
+  const [isDiscussionModalOpen, setIsDiscussionModalOpen] = useState(false);
 
   const filteredDiscussions = discussions.filter(discussion => {
     const matchesCategory = category === 'all' || discussion.category === category;
     const matchesFilter = 
       filter === 'all' ||
       (filter === 'hot' && discussion.isHot) ||
-      (filter === 'recent' && discussion.lastActivity.includes('시간') || discussion.lastActivity.includes('분'));
+      (filter === 'recent' && (discussion.lastActivity.includes('시간') || discussion.lastActivity.includes('분')));
     
     return matchesCategory && matchesFilter;
   });
@@ -103,6 +106,10 @@ export const Community: React.FC = () => {
           {filteredDiscussions.map(discussion => (
             <div
               key={discussion.id}
+              onClick={() => {
+                setSelectedDiscussion(discussion);
+                setIsDiscussionModalOpen(true);
+              }}
               style={{
                 background: 'var(--bg-white)',
                 border: '1px solid var(--border-light)',
@@ -211,6 +218,16 @@ export const Community: React.FC = () => {
 
       {/* Right Sidebar */}
       <RightSidebar />
+
+      {/* Discussion Modal */}
+      <DiscussionModal
+        discussion={selectedDiscussion}
+        isOpen={isDiscussionModalOpen}
+        onClose={() => {
+          setIsDiscussionModalOpen(false);
+          setSelectedDiscussion(undefined);
+        }}
+      />
     </div>
   );
 };
