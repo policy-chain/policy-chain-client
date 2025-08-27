@@ -383,11 +383,31 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
                       transition: 'background 0.3s',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px'
+                      gap: '8px',
+                      justifyContent: 'space-between'
                     }}
                   >
-                    <WalletIcon wallet="kaia" size={20} />
-                    Kaia Wallet
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}>
+                      <WalletIcon wallet="kaia" size={20} />
+                      Kaia Wallet
+                    </div>
+                    <span style={{
+                      fontSize: '10px',
+                      color: '#10B981',
+                      fontWeight: '500',
+                      padding: '2px 6px',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(16, 185, 129, 0.3)',
+                      backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                      display: 'inline-block',
+                      lineHeight: '1.2'
+                    }}>
+                      권장
+                    </span>
                   </button>
                   <button
                     onClick={() => {
