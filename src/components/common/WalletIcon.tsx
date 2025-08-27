@@ -14,8 +14,8 @@ export const WalletIcon: React.FC<WalletIconProps> = ({
   style = {} 
 }) => {
   const imageSrc = wallet === 'metamask' 
-    ? `${process.env.PUBLIC_URL}/images/metamask.webp` 
-    : `${process.env.PUBLIC_URL}/images/phantom.png`;
+    ? '/images/metamask.webp' 
+    : '/images/phantom.png';
   
   const altText = wallet === 'metamask' ? 'MetaMask' : 'Phantom';
 

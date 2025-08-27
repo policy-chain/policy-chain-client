@@ -341,7 +341,7 @@ export const RightSidebar: React.FC = () => {
                   overflow: 'hidden'
                 }}>
                   <img 
-                    src={`${process.env.PUBLIC_URL}/images/user-icon.png`}
+                    src="/images/user-icon.png"
                     alt="User Profile"
                     style={{
                       width: '20px',

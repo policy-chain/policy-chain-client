@@ -1,0 +1,15 @@
+{
+  "short_name": "PolicyChain",
+  "name": "PolicyChain - 블록체인 기반 정책 제안 플랫폼",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#20b2aa",
+  "background_color": "#ffffff"
+}
