@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useWallet } from '../../context/WalletContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { formatAddress } from '../../utils/wallet';
-import { Button } from '../common/Button';
 import { Icon } from '../common/Icon';
+import { WalletIcon } from '../common/WalletIcon';
 
 interface HeaderProps {
   currentSection: string;
@@ -269,7 +269,7 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
                       gap: '8px'
                     }}
                   >
-                    <Icon name="metamask" size={20} />
+                    <WalletIcon wallet="metamask" size={20} />
                     MetaMask
                   </button>
                   <button
@@ -290,7 +290,7 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
                       gap: '8px'
                     }}
                   >
-                    <Icon name="phantom" size={20} />
+                    <WalletIcon wallet="phantom" size={20} />
                     Phantom
                   </button>
                 </div>
