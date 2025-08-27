@@ -61,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange 
           }}
         >
           <img 
-            src="/images/policy-logo.png" 
+            src={`${process.env.PUBLIC_URL}/images/policy-logo.png`} 
             alt="PolicyChain Logo"
             style={{
               height: '40px',
